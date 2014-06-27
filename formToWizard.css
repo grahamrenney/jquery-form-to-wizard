@@ -1,0 +1,49 @@
+/********************/
+/** FORM TO WIZARD **/
+/********************/
+form legend {
+    display: none;
+}
+#wizard-steps {
+    background-color: #eee;
+    margin-bottom: 10px;
+    padding-left: 10px;
+}
+.prev, .next {
+    background-color:#b0232a;
+    padding:5px 10px;
+    color:#fff;
+    text-decoration:none;
+}
+.prev:hover, .next:hover {
+    background-color:#000;
+    text-decoration:none;
+}
+.prev {
+    float:left;
+}
+.next {
+    float:right;
+}
+#wizard {
+    list-style:none;
+    width:100%;
+    overflow:hidden;
+    margin:0px;
+    padding:0px;
+}
+#wizard li {
+    font-size:24px;
+    float:left;
+    padding:10px;
+    color:#b0b1b3;
+    cursor: pointer;
+    min-width: 100px;
+}
+#wizard li span {
+    font-size:13px;
+    display:block;
+}
+#wizard li.current {
+    color:#000;
+}
