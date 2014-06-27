@@ -2,9 +2,9 @@
 
 (function($) {
     $.fn.formWizard = function(config) {
-    	// 
+        // 
         var elem = this;
-        
+
         // the fieldsets are used to split the form
         var fieldsets = $(elem).find("fieldset");
         // number of steps for the wizard
@@ -18,13 +18,14 @@
 
         // place the wizard steps either in the specified holder or place before this element
         if (holderElement) {
-        	$("#" + holderElement).append("<ul id='wizard'></ul>");
+            $("#" + holderElement).append("<ul id='wizard'></ul>");
         } else {
-        	$(elem).before("<ul id='wizard'></ul>");
+            $(elem).before("<ul id='wizard'></ul>");
         }
 
+        // create wizard steps and add click behaviour
         fieldsets.each(function(i) {
-        	// wrap this fieldset with a step content di
+            // wrap this fieldset with a step content di
             $(this).wrap("<div id='stepContent" + i + "'></div>");
 
             // add the prev/next controls div at the end of this fieldset's content
@@ -35,53 +36,58 @@
 
             // $(elem).find("#step" + i).find("fieldset").find("legend").append("<div class='right' id='step" + i + "controls' class='stepcontrols'></div>")
 
-            $("#stepLink" + i).bind("click", function (e) {
+            $("#stepLink" + i).bind("click", function(e) {
                 // hide all steps that have id that starts with 'stepContent'
                 $('div[id^="stepContent"]').hide();
                 // show current step
                 $("#stepContent" + i).show();
-                selectStep("" + i);
+                activate(i);
             });
 
-            // hide content of this fieldset - selectStep(i) will show only that step's content when called
+            // hide content of this fieldset - activate(i) will show only that step's content when called
             $("#stepContent" + i).hide();
 
             if (i == 0) {
-            	// if first step only show next button
-                $("#stepLink" + i).addClass("current");
-                createButton(i, 'Next');
-            }
-            else if (i == stepCount - 1) {
-            	// if last step - only show prev button
-                createButton(i, 'Prev');
-            }
-            else {
-	            // if middle steps show both next and prev button
-                createButton(i, 'Prev');
-                createButton(i, 'Next');
+                // if first step only show next button
+                createNext(i);
+            } else if (i == stepCount - 1) {
+                // if last step - only show prev button
+                createPrev(i);
+            } else {
+                // if middle steps show both next and prev button
+                createPrev(i);
+                createNext(i);
             }
         });
 
-    	// goto the specified step index if provided, else select first step
+        // goto the specified step index if provided, else select first step
         if (startIndex) {
             $('div[id^="stepContent"]').hide();
             $("#stepContent" + startIndex).show();
-            selectStep(startIndex);
+            activate(startIndex);
         } else {
-        	selectStep(0);
+            activate(0);
         }
 
-        function createButton(i, type) {
+        function createNext(i) {
+            createButton(i, 'Next', 1);
+        }
+
+        function createPrev(i) {
+            createButton(i, 'Previous', -1);
+        }
+
+        function createButton(i, type, offset) {
             var stepName = "stepContent" + i;
-            $("#step" + i + "controls").append("<input type='button' name='next' value='" + type + "' class='btn btn-default' id='" + stepName + "Next'></input>&nbsp;&nbsp;");
-            $("#step" + i + type).bind("click", function(e) {
+            $("#step" + i + "controls").append("<input type='button' name='next' value='" + type + "' class='btn btn-default' id='" + stepName + type + "'></input>&nbsp;&nbsp;");
+            $("#stepContent" + i + type).bind("click", function(e) {
                 $("#" + stepName).hide();
-                $("#stepContent" + (i + 1)).show();
-                selectStep(i + 1);
+                $("#step" + (i + offset)).show();
+                activate((i + offset));
             });
         }
 
-        function selectStep(i) {
+        function activate(i) {
             $("#wizard li").removeClass("current");
             $("#stepLink" + i).addClass("current");
             $("#step" + i + "controls").show();
