@@ -3,13 +3,15 @@ jquery-form-to-wizard
 
 Converts a long form with fieldsets into a wizard driven form.
 
-Long form:
+###Long form:
+
 ![Image of Long Form](http://i.imgur.com/quiU7Hy.png)
 
-Wizard version
+###Wizard version:
+
 ![Image of Wizard Version](http://i.imgur.com/3OJIycm.png)
 
-#Usage
+##Usage
 
 ```javascript
 $("#someForm").formWizard({
@@ -19,6 +21,6 @@ $("#someForm").formWizard({
 });
 ```
 
-#CSS
+##CSS
 
 The css styles in formToWizard.css may be changed or overridden as per your unique requirements
