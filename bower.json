@@ -1,0 +1,24 @@
+{
+  "name": "jquery-form-to-wizard",
+  "version": "0.1",
+  "homepage": "https://github.com/grahamrenney/jquery-form-to-wizard",
+  "authors": [
+    "Graham Renney <grahamrenney@gmail.com>"
+  ],
+  "description": "converts a long form with fieldsets into a wizard driven form",
+  "main": "formToWizard.js",
+  "keywords": [
+    "jquery",
+    "form",
+    "wizard",
+    "fieldset"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}

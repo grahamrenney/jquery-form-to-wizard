@@ -1,93 +1,93 @@
-/* Created by jankoatwarpspeed.com */
+/* Created by graham renney - https://github.com/grahamrenney/jquery-form-to-wizard */
 
 (function($) {
-    $.fn.formToWizard = function(options) {
-        options = $.extend({  
-            submitButton: "" 
-        }, options); 
+    $.fn.formWizard = function(config) {
+    	// 
+        var elem = this;
         
-        var element = this;
+        // the fieldsets are used to split the form
+        var fieldsets = $(elem).find("fieldset");
+        // number of steps for the wizard
+        var stepCount = fieldsets.size();
+        // the submit button, if specified will be moved to the controls div which contains prev and next buttons
+        var submmitButton = config.submitButton ? $("#" + config.submitButton) : null;
+        // optional element which will hold the step links
+        var holderElement = config.holderElement;
+        // if specified this refers to the tab that should be selected - e.g. if you resume form capture you can specify the tab to resume on
+        var startIndex = config.startIndex;
 
-        var steps = $(element).find("fieldset");
-        var count = steps.size();
-        var submmitButtonName = "#" + options.submitButton;
-        var placementElement = options.placementElement;
-        var tabIndex = options.tabIndex;  
-
-        if (placementElement) {
-        	$("#" + placementElement).append("<ul id='steps'></ul>");
+        // place the wizard steps either in the specified holder or place before this element
+        if (holderElement) {
+        	$("#" + holderElement).append("<ul id='wizard'></ul>");
         } else {
-        	$(element).before("<div class='grey_row'><ul id='steps'></ul></div>");
+        	$(elem).before("<ul id='wizard'></ul>");
         }
 
-        steps.each(function(i) {
-            $(this).wrap("<div id='step" + i + "'></div>");
-            $(this).append("<p id='step" + i + "commands' class='pull-right'></p>");
+        fieldsets.each(function(i) {
+        	// wrap this fieldset with a step content di
+            $(this).wrap("<div id='stepContent" + i + "'></div>");
 
-            // 2
-            var name = $(this).find("legend").html();
-            $("#steps").append("<li id='stepDesc" + i + "'>Step " + (i + 1) + "<span>" + name + "</span></li>");
+            // add the prev/next controls div at the end of this fieldset's content
+            $(this).append("<div id='step" + i + "controls'></div>");
 
-            // $(element).find("#step" + i).find("fieldset").find("legend").append("<div class='right' id='step" + i + "commands' class='stepCommands'></div>")
+            // add step links to wizard step div
+            $("#wizard").append("<li id='stepLink" + i + "'>Step " + (i + 1) + "<span>" + $(this).find("legend").html() + "</span></li>");
 
-            $("#stepDesc" + i).bind("click", function (e) {
-                var stepName = "step" + i;
-                $('div[id^="step"]').hide();
-                $("#" + stepName).show();
+            // $(elem).find("#step" + i).find("fieldset").find("legend").append("<div class='right' id='step" + i + "controls' class='stepcontrols'></div>")
+
+            $("#stepLink" + i).bind("click", function (e) {
+                // hide all steps that have id that starts with 'stepContent'
+                $('div[id^="stepContent"]').hide();
+                // show current step
+                $("#stepContent" + i).show();
                 selectStep("" + i);
             });
 
+            // hide content of this fieldset - selectStep(i) will show only that step's content when called
+            $("#stepContent" + i).hide();
+
             if (i == 0) {
-                createNextButton(i);
-                selectStep(i);
-                $("#stepDesc" + i).addClass("current");
+            	// if first step only show next button
+                $("#stepLink" + i).addClass("current");
+                createButton(i, 'Next');
             }
-            else if (i == count - 1) {
-                $("#step" + i).hide();
-                createPrevButton(i);
+            else if (i == stepCount - 1) {
+            	// if last step - only show prev button
+                createButton(i, 'Prev');
             }
             else {
-                $("#step" + i).hide();
-                createPrevButton(i);
-                createNextButton(i);
+	            // if middle steps show both next and prev button
+                createButton(i, 'Prev');
+                createButton(i, 'Next');
             }
         });
-        $(submmitButtonName).appendTo('#step' + 0 + 'commands');
 
-        if (tabIndex) {
-            var stepName = "step" + tabIndex;
-            $('div[id^="step"]').hide();
-            $("#" + stepName).show();
-            selectStep(tabIndex);
+    	// goto the specified step index if provided, else select first step
+        if (startIndex) {
+            $('div[id^="stepContent"]').hide();
+            $("#stepContent" + startIndex).show();
+            selectStep(startIndex);
+        } else {
+        	selectStep(0);
         }
 
-        function createPrevButton(i) {
-            var stepName = "step" + i;
-            // <input type="button" name="next" value="Next" class="btn btn-primary ng-binding" ng-click="tab.index = 1" />
-            $("#" + stepName + "commands").append("<input type='button' name='prev' value='Previous' class='btn btn-default' id='" + stepName + "Prev'></input>&nbsp;&nbsp;");
-            $("#" + stepName + "Prev").bind("click", function(e) {
+        function createButton(i, type) {
+            var stepName = "stepContent" + i;
+            $("#step" + i + "controls").append("<input type='button' name='next' value='" + type + "' class='btn btn-default' id='" + stepName + "Next'></input>&nbsp;&nbsp;");
+            $("#step" + i + type).bind("click", function(e) {
                 $("#" + stepName).hide();
-                $("#step" + (i - 1)).show();
-                selectStep(i - 1);
-            });
-        }
-
-        function createNextButton(i) {
-            var stepName = "step" + i;
-            $("#" + stepName + "commands").append("<input type='button' name='next' value='Next' class='btn btn-default' id='" + stepName + "Next'></input>&nbsp;&nbsp;");
-            $("#" + stepName + "Next").bind("click", function(e) {
-                $("#" + stepName).hide();
-                $("#step" + (i + 1)).show();
+                $("#stepContent" + (i + 1)).show();
                 selectStep(i + 1);
             });
         }
 
         function selectStep(i) {
-            $("#steps li").removeClass("current");
-            $("#stepDesc" + i).addClass("current");
-            $("#step" + i + "commands").show();
-            $(submmitButtonName).appendTo('#step' + i + 'commands');
+            $("#wizard li").removeClass("current");
+            $("#stepLink" + i).addClass("current");
+            $("#step" + i + "controls").show();
+            $("#stepContent" + i).show();
+            /// move submit button into the next/prev controls div
+            submmitButton.appendTo('#step' + i + 'controls');
         }
-
     }
-})(jQuery); 
+})(jQuery);
