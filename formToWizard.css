@@ -47,3 +47,6 @@ form legend {
 #wizard li.current {
     color:#000;
 }
+.wizard-controls {
+	float: right;
+}

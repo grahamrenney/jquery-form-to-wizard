@@ -29,7 +29,7 @@
             $(this).wrap("<div id='stepContent" + i + "'></div>");
 
             // add the prev/next controls div at the end of this fieldset's content
-            $(this).append("<div id='step" + i + "controls'></div>");
+            $(this).append("<div id='step" + i + "controls' class='wizard-controls'></div>");
 
             // add step links to wizard step div
             $("#wizard").append("<li id='stepLink" + i + "'>Step " + (i + 1) + "<span>" + $(this).find("legend").html() + "</span></li>");
