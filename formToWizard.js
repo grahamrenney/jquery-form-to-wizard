@@ -1,7 +1,7 @@
 /* Created by graham renney - https://github.com/grahamrenney/jquery-form-to-wizard */
 
 (function($) {
-	$.fn.formWizard = function(config) {
+	$.fn.formToWizard = function(config) {
 		// 
 		var elem = this;
 
